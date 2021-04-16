@@ -1,0 +1,101 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: Sprint 2
+tags:
+  - name: Contract and Eligibility Check
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /swagger:
+    x-swagger-pipe: swagger_raw
+
+  /vod-ms-upgrade-journey-upgradeeligibility/tmf-api/productOfferingQualification/v4/productOfferingQualification/{msisdn}:
+    get:
+      tags:
+        - Eligibility Check
+      summary: Returns eligible
+      operationId: getUpgradeEligible
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: msisdn
+          required: true
+          type: string
+          description: Customer MSISDN is input.
+      responses:
+        200:
+          description: Eligibility Check retrieved successfully.
+          schema:
+            $ref: "#/definitions/EligibilityCheck-Model"
+        400:
+          description: Missing required input parameter.
+        404:
+          description: No Data found.
+        424:
+          description: Upstream call failed with a 500. Response will be identical to upstream failure.
+        500:
+          description: Technical error occured, service failure.
+
+  /vod-ms-upgrade-journey-agreement/tmf-api/agreementManagement/v4/agreement/{msisdn}:
+    get:
+      tags:
+        - Plan Details
+      summary: Current Contract summary
+      operationId: getPlanDetails
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: msisdn
+          required: true
+          type: string
+          description: Msisdn of account.
+      responses:
+        200:
+          description: Plan Details retrieved successfully.
+          schema:
+            $ref: "#/definitions/PlanDetails-Model"
+        400:
+          description: Missing required input parameter.
+        404:
+          description: No Data found.
+        424:
+          description: Upstream call failed with a 500. Response will be identical to upstream failure.
+        500:
+          description: Technical error occured, service failure.
+
+# complex objects have schema definitions
+definitions:
+  # Get EligibilityCheck
+  EligibilityCheck-Model:
+    type: object
+    properties:
+      result:
+        type: object
+        properties:
+          Eligibilty Check:
+            type: array
+            items:
+              type: string
+
+  # Get PlanDetails
+  PlanDetails-Model:
+    type: object
+    properties:
+      result:
+        type: object
+        properties:
+          Plan Details:
+            type: array
+            items:
+              type: string
